@@ -30,8 +30,8 @@ def check():
     h = str(data["hash"]).lower()
     print(f"check: hash={h}", flush=True)
 
-    # TODO 1: sprawdź, czy h należy do zbioru KNOWN_HASHES (wynik zapisz w zmiennej found)
-    # TODO 2: zwróć JSON {"found": found}
+    found = h in KNOWN_HASHES
+    return jsonify({"found": found})
 
 
 if __name__ == "__main__":
