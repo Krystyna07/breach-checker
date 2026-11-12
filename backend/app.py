@@ -1,4 +1,5 @@
 import os
+import re
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -28,6 +29,8 @@ def check():
         return jsonify({"error": "brak pola 'hash'"}), 400
 
     h = str(data["hash"]).lower()
+    if not re.fullmatch(r"[0-9a-f]{40}", h):
+        return jsonify({"error": "nieprawidłowy format hashu"}), 400
     print(f"check: hash={h}", flush=True)
 
     found = h in KNOWN_HASHES
