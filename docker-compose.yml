@@ -4,7 +4,8 @@ services:
     ports:
       - "8080:80"          # jedyny port opublikowany na hoście
     depends_on:
-      - backend            # nginx przy starcie musi znaleźć nazwę backend
+      backend:
+        condition: service_healthy
 
   backend:
     build: ./backend
@@ -13,10 +14,15 @@ services:
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     depends_on:
       db:
         condition: service_healthy
-
   db:
     image: postgres:16-alpine
     environment:
@@ -35,5 +41,3 @@ services:
 
 volumes:
   pgdata:
-
-
